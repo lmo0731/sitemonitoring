@@ -1,0 +1,75 @@
+/* 
+    Document   : style
+    Created on : Sep 26, 2013, 8:19:39 PM
+    Author     : munkhochir
+    Description:
+        Purpose of the stylesheet follows.
+*/
+* {
+    padding: 0;
+    margin: 0;
+    font-family: verdana;
+}
+
+root { 
+    display: block;
+}
+body {
+    text-align: center;
+    background: #eee;
+}
+#wrapper {
+    position: relative;
+    width: 800px;
+    text-align: left;
+    margin: 20px auto;
+}
+
+#header {
+    position: absolute;
+    top: -130px;
+    width: 100%;
+    height: 150px;
+    background: url(images/header.png) no-repeat right center;
+    background-position: right 40px top 0px;
+}
+#page {
+    position: absolute;
+    top: 130px;
+    margin: 0 auto 0;
+    width: 778px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+.content-wrapper {
+    padding: 10px;
+}
+#result td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+table {
+    width: 100%;
+}
+
+table#search {
+    background: yellow;
+}
+
+hr {
+    margin: 20px 0;
+}
+input {
+    padding: 7px 3px;
+}
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
