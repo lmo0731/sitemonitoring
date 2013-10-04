@@ -35,7 +35,7 @@ public abstract class ParserCore implements Parser, JNDIService {
     public final void start() {
         BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%c.%M(%C{1}.java:%L) %m")));
         try {
-            DailyRollingFileAppender appender = new DailyRollingFileAppender(new PatternLayout("[%-5p] %d{HH:mm:ss} %C:(%3L): [" + this.getPort() + "] %m%n"), String.format("../logs/parsers/%s%s.log", this.getPort(), this.getClass().getSimpleName()), "'.'yyyy-MM-dd");
+            DailyRollingFileAppender appender = new DailyRollingFileAppender(new PatternLayout("[%-5p] %d{HH:mm:ss} %C:(%3L): [" + this.getPort() + "] %m%n"), "../logs/parsers.log", "'.'yyyy-MM-dd");
             appender.setAppend(true);
             logger.addAppender(appender);
         } catch (IOException ex) {
