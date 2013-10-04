@@ -100,7 +100,7 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                         } else if (tmp.length == 2) {
                             data.map.put(device + "." + tmp[0], tmp[1]);
                         } else if (!tmp[0].trim().isEmpty()) {
-                            //data.map.put(device + "_" + tmp[0], "-");
+                            data.map.put(device + "." + tmp[0], "");
                         }
                     }
                 }
@@ -109,14 +109,14 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                     bw.write("OK\n");
                     bw.flush();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    logger.info("", ex);
                 }
                 register(data);
             } else {
-                System.out.println("Unsupported request: " + header);
+                logger.info("Unsupported request: " + header);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.info("", ex);
         }
     }
 
