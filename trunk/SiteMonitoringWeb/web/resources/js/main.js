@@ -44,7 +44,7 @@ $(document).ready(function() {
     var args = eval(json);
     console.log(args);
     uriargs = args;
-    uriargs.max = uriargs.max ? uriargs.max : 20;
+    uriargs.max = uriargs.max ? uriargs.max : 100;
     uriargs.first = uriargs.first ? uriargs.first : 0;
     if (args.site) {
         loadScript('report', {
@@ -80,10 +80,15 @@ $(document).ready(function() {
 });
 
 function loadScript(uri, params) {
+    if(!params) params = {};
     params._first = uriargs.first;
     params._max = uriargs.max;
     if (params) {
-        uri += '?' + jQuery.param(params);
+        if (uri.indexOf('?') > 0) {
+            uri += '&' + jQuery.param(params);
+        } else {
+            uri += '?' + jQuery.param(params);
+        }
     }
     console.log(uri);
     $("#script").html("<script type='text/javascript' src='" + uri + "'></script>");
@@ -130,7 +135,7 @@ function processDevices(json) {
     }
     $("#content").html(html);
     loadScript('report', {
-        _name: 'Measure.findLastMeasuresOfSite',
+        _name: 'Measure.findLastMeasureIdsOfSite',
         site: 'i' + uriargs.site,
         _callback: 'processMeasures'
     });
@@ -138,12 +143,30 @@ function processDevices(json) {
 
 function processMeasures(json) {
     var html = "";
-    html += "<hr/>"
+    $("#content").append("<hr/>");
     if (json.info == "OK") {
+        var url = "_name=Measure.findByIds&id=&id=";
+        for (var i = 0; i < json.result.length; i++) {
+            url += '&id=i' + json.result[i];
+            json.result[i] = 'i' + json.result[i];
+        }
+        //if (false)
+        $("#content").append("<div id='measures'></div>");
+        loadScript('report?_callback=processLastMeasures&' + url);
+    } else {
+        $("#content").append(json.info);
+    }
+    $("#content").append(html);
+}
+
+function processLastMeasures(json) {
+    var html = "";
+    console.log(json);
+    if (json.info == 'OK') {
         html += ("<table id='result'><tr><th>Measure</th><th>Value</th><th>Received date</th><th>Control</th></tr>");
         for (var i = 0; i < json.result.length; i++) {
-            var date = json.result[i][0];
-            var measure = json.result[i][1];
+            var date = json.result[i][1];
+            var measure = json.result[i][0];
             var device = json.result[i][2];
             html += "<tr>";
             html += "<td>" + measure.name + "</td>";
@@ -158,14 +181,14 @@ function processMeasures(json) {
             html += value;
             html += "</td>";
             html += "<td>" + date.toLocaleString() + "</td>"
-            html += "<td><a href='#' onclick=\"controlSite('set', '" + device.udid + "', '" + measure.name + "','" + value + "')\">SET</a></td>";
+            html += "<td><a href='#' onclick=\"controlSite('set', '" + device + "', '" + measure.name + "','" + value + "')\">SET</a></td>";
             html += "</tr>";
         }
         html += ("</table>");
+        $("#content #measures").html(html);
     } else {
-        html += (json.info);
+        $("#content #measures").html(json.info);
     }
-    $("#content").append(html);
 }
 
 function controlSite(type, device, measure, value) {
@@ -223,7 +246,7 @@ function processEvents(json) {
             html += "</tr>";
         }
         html += ("</table>");
-        uriargs.first = parseInt(uriargs.first) + 20;
+        uriargs.first = parseInt(uriargs.first) + parseInt(uriargs.max);
         var url = window.location.pathname + "?" + jQuery.param(uriargs);
         html += "<a href='" + url + "'>next</a>";
     } else {
