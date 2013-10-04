@@ -10,10 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -44,10 +42,12 @@ public class NetScadaParser extends ParserCore implements JNDIService {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String header = br.readLine();
+            logger.info("Header:  " + header);
             Data data = new Data();
             data.map = new HashMap<String, Object>();
             data.additional = new Date();
             String[] tmp = header.split("[\\t]");
+            logger.info(tmp.length);
             if (tmp.length > 2) {
                 data.name = tmp[0];
                 String device = tmp[2];
@@ -64,35 +64,43 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                     }
                     tmp = line.split("[\\t]");
                     if (tmp[0].toLowerCase().equals("batt")) {
-                        data.map.put(device + "_batt_v1", tmp[1]);
-                        data.map.put(device + "_batt_v2", tmp[2]);
-                        data.map.put(device + "_batt_i1", tmp[3]);
-                        data.map.put(device + "_batt_i2", tmp[4]);
-                        data.map.put(device + "_batt_t1", tmp[5]);
-                        data.map.put(device + "_batt_t2", tmp[6]);
+                        data.map.put(device + ".batt.v1", tmp[1]);
+                        data.map.put(device + ".batt.v2", tmp[2]);
+                        data.map.put(device + ".batt.i1", tmp[3]);
+                        data.map.put(device + ".batt.i2", tmp[4]);
+                        data.map.put(device + ".batt.t1", tmp[5]);
+                        data.map.put(device + ".batt.t2", tmp[6]);
                     } else if (tmp[0].toLowerCase().equals("smro")) {
-                        data.map.put(device + "_smro_v", tmp[1]);
-                        data.map.put(device + "_smro_i1", tmp[2]);
-                        data.map.put(device + "_smro_i2", tmp[3]);
-                        data.map.put(device + "_smro_i3", tmp[4]);
-                        data.map.put(device + "_smro_i4", tmp[5]);
-                        data.map.put(device + "_smro_i5", tmp[6]);
-                        data.map.put(device + "_smro_i6", tmp[7]);
+                        data.map.put(device + ".smro.v", tmp[1]);
+                        data.map.put(device + ".smro.i1", tmp[2]);
+                        data.map.put(device + ".smro.i2", tmp[3]);
+                        data.map.put(device + ".smro.i3", tmp[4]);
+                        data.map.put(device + ".smro.i4", tmp[5]);
+                        data.map.put(device + ".smro.i5", tmp[6]);
+                        data.map.put(device + ".smro.i6", tmp[7]);
                     } else if (tmp[0].toLowerCase().equals("dcou")) {
-                        data.map.put(device + "_dcou_v", tmp[1]);
-                        data.map.put(device + "_dcou_i", tmp[2]);
+                        data.map.put(device + ".dcou.v", tmp[1]);
+                        data.map.put(device + ".dcou.i", tmp[2]);
                     } else if (tmp[0].toLowerCase().equals("alrm")) {
-                        data.map.put(device + "_alarm_info_" + r, tmp[1]);
-                        data.map.put(device + "_alarm_date_" + r, tmp[2]);
+                        data.map.put(device + ".alrm.info_" + r, tmp[1]);
+                        data.map.put(device + ".alrm.date_" + r, tmp[2]);
+                    } else if (tmp[0].toLowerCase().equals("acin")) {
+                        data.map.put(device + ".acin.a", tmp[1]);
+                        if (tmp.length > 2) {
+                            data.map.put(device + ".acin.b", tmp[2]);
+                        }
+                        if (tmp.length > 3) {
+                            data.map.put(device + ".acin.c", tmp[3]);
+                        }
                     } else {
                         if (tmp.length > 2) {
                             for (int i = 1; i < tmp.length; i++) {
-                                data.map.put(device + "_" + tmp[0] + "_" + i, tmp[i]);
+                                data.map.put(device + "." + tmp[0] + "." + i, tmp[i]);
                             }
                         } else if (tmp.length == 2) {
-                            data.map.put(device + "_" + tmp[0], tmp[1]);
+                            data.map.put(device + "." + tmp[0], tmp[1]);
                         } else if (!tmp[0].trim().isEmpty()) {
-                            data.map.put(tmp[0], "-");
+                            //data.map.put(device + "_" + tmp[0], "-");
                         }
                     }
                 }
@@ -105,7 +113,7 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                 }
                 register(data);
             } else {
-                System.out.println("Unsupported request: " + tmp[0]);
+                System.out.println("Unsupported request: " + header);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -125,11 +133,15 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                     bw.write(siteId);
                     logger.info(d.map);
                     for (String key : d.map.keySet()) {
-                        int k = key.indexOf("_");
+                        int k = key.indexOf(".");
+                        int e = key.lastIndexOf(".");
+                        if (k >= e) {
+                            e = key.length();
+                        }
                         bw.write("\t");
-                        bw.write(key.substring(0, k));
+                        bw.write(key.substring(0, Math.max(k, 0)));
                         bw.write("\t");
-                        bw.write(key.substring(k + 1));
+                        bw.write(key.substring(k + 1, e));
                         break;
                     }
                     bw.write("\n\n");
@@ -147,11 +159,16 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                     bw.write("\t");
                     bw.write(siteId);
                     for (Entry<String, Object> e : d.map.entrySet()) {
-                        int k = e.getKey().indexOf("_");
+                        String key = e.getKey();
+                        int k = key.indexOf(".");
+                        int j = key.lastIndexOf(".");
+                        if (k >= j) {
+                            j = key.length();
+                        }
                         bw.write("\t");
-                        bw.write(e.getKey().substring(0, k));
+                        bw.write(key.substring(0, Math.max(k, 0)));
                         bw.write("\t");
-                        bw.write(e.getKey().substring(k + 1));
+                        bw.write(key.substring(k + 1, j));
                         bw.write("\t");
                         bw.write(e.getValue().toString());
                         break;
