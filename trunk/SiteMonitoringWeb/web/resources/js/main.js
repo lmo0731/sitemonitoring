@@ -3,19 +3,186 @@
  * and open the template in the editor.
  */
 var uriargs = {};
+
+var desc = {
+    "em.apvo": ["Цахилгаан тоолуурын","A фазын хүчдэл",null, "вольт"],
+    "em.bpvo": ["Цахилгаан тоолуурын","B фазын хүчдэл",null, "вольт"],
+    "em.cpvo": ["Цахилгаан тоолуурын","C фазын хүчдэл",null, "вольт"],
+    "em.apcu": ["Цахилгаан тоолуурын","A фазын гүйдэл",null, "ампер"],
+    "em.bpcu": ["Цахилгаан тоолуурын","B фазын гүйдэл",null, "ампер"],
+    "em.cpcu": ["Цахилгаан тоолуурын","C фазын гүйдэл",null, "ампер"],
+    "em.appf": ["Цахилгаан тоолуурын","A чадлын коэффициент",null, ""],
+    "em.bppf": ["Цахилгаан тоолуурын","B чадлын коэффициент",null, ""],
+    "em.cppf": ["Цахилгаан тоолуурын","C чадлын коэффициент",null, ""],
+    "em.aate": ["Цахилгаан тоолуурын","Active Total Energy",null,"кВт/цаг"],
+    "em.aase": ["Цахилгаан тоолуурын","Active Sharp Energy",null,"кВт/цаг"],
+    "em.aape": ["Цахилгаан тоолуурын","Active Peak Energy",null,"кВт/цаг"],
+    "em.aaop": ["Цахилгаан тоолуурын","Active Off-Peak Energy",null,"кВт/цаг"],
+    "em.aash": ["Цахилгаан тоолуурын","Active Shoulder Energy",null,null],
+    "em.irte": ["Цахилгаан тоолуурын","Reactive total energy",null,null],
+    "em.iret1": ["Цахилгаан тоолуурын","Reactive tariff 1",null,null],
+    "em.iret2": ["Цахилгаан тоолуурын","Reactive tariff 2",null,null],
+    "em.iret3": ["Цахилгаан тоолуурын","Reactive tariff 3",null,null],
+    "em.iret4": ["Цахилгаан тоолуурын","Reactive tariff 4",null,null],
+    "ge.temp": ["Цахилгааны генераторын","Моторын хөргүүрийн шингэны температур",null,"цельс"],
+    "ge.pressure": ["Цахилгааны генераторын","Моторын тосын даралт",null,"кПа"],
+    "ge.fuel": ["Цахилгааны генераторын","Түлшний хэмжээ",null,"%"],
+    "ge.frequency": ["Цахилгааны генераторын","Гаралтын хувьсах хүчдэлийн давтамж",null,"Гц"],
+    "ge.operation_mode": ["Цахилгааны генераторын","Ажиллагааны горим",{
+        "0": "унтарсан",
+        "1": "автомат горим",
+        "2": "ассан"
+    },null],
+    "ge.status": ["Цахилгааны генераторын","Моторын төлөв",{
+        "0": "Асааж байна 1",
+        "1": "Асааж байна 2",
+        "2": "Асааж байна 3",
+        "3": "Ассан",
+        "4": "Хөргөхөд бэлдэж байна",
+        "5": "Хөргөөж байна",
+        "6": "Унтрааж байна",
+        "7": "Унтраасан 2"
+    },null],
+    "ge.engine rpm": ["Цахилгааны генераторын","Моторын эргэлт",null,"эргэлт/мин"],
+    "ge.battery volt": ["Цахилгааны генераторын","Баттерейн хүчдэл",null,"Вольт"],
+    "ge.cool down duration": ["Цахилгааны генераторын","Моторыг зогсооход үлдсэн хугацаа",null,"сек"],
+    "da.bat1.1": ["Шулуутгагчийн","Battery 1-н хүчдэл",null,null],
+    "da.bat1.2": ["Шулуутгагчийн","Battery 1-н гүйдэл",null,null],
+    "da.bat1.3": ["Шулуутгагчийн","Battery 1-н температур",null,null],
+    "da.bat2.1": ["Шулуутгагчийн","Battery 2-н хүчдэл",null,null],
+    "da.bat2.2": ["Шулуутгагчийн","Battery 2-н гүйдэл",null,null],
+    "da.bat2.3": ["Шулуутгагчийн","Battery 2-н температур",null,null],
+    "da.smro": ["Шулуутгагчийн","Модулын хүчдэлийн гаралт",null,null],
+    "da.smri.1": ["Шулуутгагчийн","Модул 1-н гаралтын гүйдэл",null,null],
+    "da.smri.2": ["Шулуутгагчийн","Модул 2-н гаралтын гүйдэл",null,null],
+    "da.smri.3": ["Шулуутгагчийн","Модул 3-н гаралтын гүйдэл",null,null],
+    "da.smr1.1": ["Шулуутгагчийн","Модул 1-н төлөв",null,null],
+    "da.smr1.2": ["Шулуутгагчийн","Модул 1-н аларм",null,null],
+    "da.smr2.1": ["Шулуутгагчийн","Модул 2-н төлөв",null,null],
+    "da.smr2.2": ["Шулуутгагчийн","Модул 2-н аларм",null,null],
+    "da.smr3.1": ["Шулуутгагчийн","Модул 3-н төлөв",null,null],
+    "da.smr3.2": ["Шулуутгагчийн","Модул 3-н аларм",null,null],
+    "da.dcou.1": ["Шулуутгагчийн","Тогтмол хүчдэлийн гаралт",null,null],
+    "da.dcou.1": ["Шулуутгагчийн","Гаралтын гүйдлыг утга",null,null],
+    "da.alrm_info": ["Шулуутгагчийн","Дохиоллын текст",null,null],
+    "da.alrm_date": ["Шулуутгагчийн","Дохиоллын огноо",null,null],
+    "da.acin.1": ["Шулуутгагчийн","A фазын хүчдэл",null,null],
+    "da.acin.2": ["Шулуутгагчийн","B фазын хүчдэл",null,null],
+    "da.acin.3": ["Шулуутгагчийн","C фазын хүчдэл",null,null],
+    "da.acin.a": ["Шулуутгагчийн","A фазын хүчдэл",null,null],
+    "da.acin.b": ["Шулуутгагчийн","B фазын хүчдэл",null,null],
+    "da.acin.c": ["Шулуутгагчийн","C фазын хүчдэл",null,null],
+    "da.brf1": ["Шулуутгагчийн","LLVD1 пускателиудийн төлөв",null,null],
+    "da.brf2": ["Шулуутгагчийн","LLVD2 пускателиудийн төлөв",null,null],
+    "re.bat1.1": ["Шулуутгагчийн","Battery 1-н хүчдэл",null,null],
+    "re.bat1.2": ["Шулуутгагчийн","Battery 1-н гүйдэл",null,null],
+    "re.bat1.3": ["Шулуутгагчийн","Battery 1-н температур",null,null],
+    "re.bat2.1": ["Шулуутгагчийн","Battery 2-н хүчдэл",null,null],
+    "re.bat2.2": ["Шулуутгагчийн","Battery 2-н гүйдэл",null,null],
+    "re.bat2.3": ["Шулуутгагчийн","Battery 2-н температур",null,null],
+    "re.smro": ["Шулуутгагчийн","Модулын хүчдэлийн гаралт",null,null],
+    "re.smri.1": ["Шулуутгагчийн","Модул 1-н гаралтын гүйдэл",null,null],
+    "re.smri.2": ["Шулуутгагчийн","Модул 2-н гаралтын гүйдэл",null,null],
+    "re.smri.3": ["Шулуутгагчийн","Модул 3-н гаралтын гүйдэл",null,null],
+    "re.smr1.1": ["Шулуутгагчийн","Модул 1-н төлөв",null,null],
+    "re.smr1.2": ["Шулуутгагчийн","Модул 1-н аларм",null,null],
+    "re.smr2.1": ["Шулуутгагчийн","Модул 2-н төлөв",null,null],
+    "re.smr2.2": ["Шулуутгагчийн","Модул 2-н аларм",null,null],
+    "re.smr3.1": ["Шулуутгагчийн","Модул 3-н төлөв",null,null],
+    "re.smr3.2": ["Шулуутгагчийн","Модул 3-н аларм",null,null],
+    "re.dcou.1": ["Шулуутгагчийн","Тогтмол хүчдэлийн гаралт",null,null],
+    "re.dcou.1": ["Шулуутгагчийн","Гаралтын гүйдлыг утга",null,null],
+    "re.alrm_info": ["Шулуутгагчийн","Дохиоллын текст",null,null],
+    "re.alrm_date": ["Шулуутгагчийн","Дохиоллын огноо",null,null],
+    "re.acin.1": ["Шулуутгагчийн","A фазын хүчдэл",null,null],
+    "re.acin.2": ["Шулуутгагчийн","B фазын хүчдэл",null,null],
+    "re.acin.3": ["Шулуутгагчийн","C фазын хүчдэл",null,null],
+    "re.acin.a": ["Шулуутгагчийн","A фазын хүчдэл",null,null],
+    "re.acin.b": ["Шулуутгагчийн","B фазын хүчдэл",null,null],
+    "re.acin.c": ["Шулуутгагчийн","C фазын хүчдэл",null,null],
+    "re.brf1": ["Шулуутгагчийн","LLVD1 пускателиудийн төлөв",null,null],
+    "re.brf2": ["Шулуутгагчийн","LLVD2 пускателиудийн төлөв",null,null],
+    "ac.on_off": ["Эйркондиционерийн","Ажиллагааны төлөв",{
+        "0":"унтарсан",
+        "1":"ассан"
+    },null],
+    "ac.swing": ["Эйркондиционерийн","Үлээлтийн төлөв",{
+        "0":"бүх чиглэлд",
+        "1":"хөдөлгөөнгүй"
+    },null],
+    "ac.mode": ["Эйркондиционерийн","Температурын төлөв",{
+        "1":"халуун",
+        "2":"хүйтэн",
+        "3":"сэнс",
+        "4":"чиигшилтэй",
+        "5":"автомат"
+    },null],
+    "ac.fan_speed": ["Эйркондиционерийн","Сэнсны хурд",{
+        "1":"автомат",
+        "2":"хурдан",
+        "3":"дунд",
+        "4":"удаан"
+    },null],
+    "ac.alarm": ["Эйркондиционерийн","Түгшүүр",null,null],
+    "ac.temp": ["Эйркондиционерийн","Температур",null,"цельс"],
+    "ac.room_temp": ["Эйркондиционерийн","Өрөөний температур",null,"цельс"],
+    "ac.coil1_temp": ["Эйркондиционерийн","Ороомог 1-н температур",null,"цельс"],
+    "ac.coil2_temp": ["Эйркондиционерийн","Ороомог 2-н температур",null,"цельс"],
+    "ac.compr_temp": ["Эйркондиционерийн","compr-н температур",null,"цельс"],
+    "ac.cooling_temp": ["Эйркондиционерийн","Хөргөх температур",null,"цельс"],
+    "ac.heating_start": ["Эйркондиционерийн","Автоматаар халаах температур",null,"цельс"],
+    "ac.heating_stop": ["Эйркондиционерийн","Автоматаар зогсоох температур",null,"цельс"],
+    "ac.time": ["Эйркондиционерийн","Унтраах хугацаа",null,"минут"]
+}
+
+var set = {
+    "ge.on_off": ["Генераторыг","унтраах асаах",{
+        "0": "унтраах",
+        "1": "автомат горим",
+        "2": "асаах"
+    },null],
+    "ge.temp" : ["Генераторын","температур",null, null],
+    "ac.on_off": ["Эйркондиционерийг","унтраах асаах",{
+        "0":"утнраах",
+        "1":"асаах"
+    },null],
+    "ac.temp": ["Эйркондиционерийн","температур",null,"цельс"],
+    "ac.swing": ["Эйркондиционерийг чиглэл",{
+        "0":"бүх чиглэлд",
+        "1":"хөдөлгөөнгүй"
+    },null],
+    "ac.mode": ["Эйркондиционерийн","горим",{
+        "1":"халуун",
+        "2":"хүйтэн",
+        "3":"сэнс",
+        "4":"чийгшилттэй",
+        "5":"автомат"
+    },null],
+    "ac.fan_speed": ["Эйркондиционерийн","Сэнсны хурд",{
+        "1":"автомат",
+        "2":"хурдан",
+        "3":"дунд",
+        "4":"удаан"
+    },null],
+    "ac.time": ["Эйркондиционерийн","Унтраах хугацаа",null,"минут"],
+    "ac.cooling_temp": ["Эйркондиционерийн","Хөргөх температур",null,"цельс"],
+    "ac.heating_start": ["Эйркондиционерийн","Автоматаар халаах температур",null,"цельс"],
+    "ac.heating_stop": ["Эйркондиционерийн","Автоматаар зогсоох температур",null,"цельс"]
+}
+
 Date.prototype.toISOString = function() {
     var padDigits = function padDigits(number, digits) {
         return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
     };
     return this.getFullYear()
-            + "-" + padDigits((this.getMonth() + 1), 2)
-            + "-" + padDigits(this.getDate(), 2)
-            + " "
-            + padDigits(this.getHours(), 2)
-            + ":" + padDigits(this.getMinutes(), 2)
-            + ":" + padDigits(this.getSeconds(), 2)
-            //+ "." + padDigits(this.getMilliseconds(), 2);
-            + "";
+    + "-" + padDigits((this.getMonth() + 1), 2)
+    + "-" + padDigits(this.getDate(), 2)
+    + " "
+    + padDigits(this.getHours(), 2)
+    + ":" + padDigits(this.getMinutes(), 2)
+    + ":" + padDigits(this.getSeconds(), 2)
+    // + "." + padDigits(this.getMilliseconds(), 2);
+    + "";
 };
 $(document).ready(function() {
     var uri = window.location.search.toString();
@@ -168,20 +335,39 @@ function processLastMeasures(json) {
             var date = json.result[i][1];
             var measure = json.result[i][0];
             var device = json.result[i][2];
+            var key = measure.name.toLowerCase();
+            while(key.indexOf('.') < key.lastIndexOf('.') && !desc[key]){
+                key = (key.substring(0, key.lastIndexOf('.')));
+            }
+            var keyStr = $.trim(key);
+            if(desc[key]){
+                keyStr = desc[key][0]+" "+desc[key][1];
+            }
             html += "<tr>";
-            html += "<td>" + measure.name + "</td>";
+            html += "<td>" + keyStr + " (" + measure.name + ")</td>";
             html += "<td>";
-            var value = null;
-            if (measure.value) {
-                value = measure.value;
+            var value = "";
+            value = measure.info;
+            var valueStr = measure.info;
+            if(desc[key]){
+                if(desc[key][2]){
+                    if(desc[key][2][measure.info]){
+                        valueStr = desc[key][2][measure.info];
+                    }
+                }
+                if(desc[key][3]){
+                    valueStr += " " + desc[key][3];
+                }
+                valueStr = $.trim(valueStr);
             }
-            if (measure.info) {
-                value = measure.info;
-            }
-            html += value;
+            html += valueStr;
             html += "</td>";
             html += "<td>" + date.toLocaleString() + "</td>"
-            html += "<td><a href='#' onclick=\"controlSite('set', '" + device + "', '" + measure.name + "','" + value + "')\">SET</a></td>";
+            html += "<td>";
+            if(set[key]){
+                html += "<a href='#' onclick=\"controlSite('set', '" + device + "', '" + measure.name + "','" + value + "')\">SET</a>";
+            }
+            html += "</td>";
             html += "</tr>";
         }
         html += ("</table>");
@@ -230,10 +416,10 @@ function controlSite(type, device, measure, value) {
 function processEvents(json) {
     var now = new Date();
     var html = "<form method='get'>"
-            + "<input name='device' value='" + uriargs.device + "' style='display: none'/>"
-            + "<table id='search'><tr><td>From</td><td><input name='begin' value='" + (uriargs.begin ? uriargs.begin : (new Date(now.getTime() - 3600 * 24 * 1000).toISOString())) + "'/></td></tr>"
-            + "<tr><td>To</td><td><input name='end' value='" + (uriargs.end ? uriargs.end : (new Date(now.getTime()).toISOString())) + "'/></td></tr>"
-            + "<tr><input type='submit' value='Search'/><tr><table></form>";
+    + "<input name='device' value='" + uriargs.device + "' style='display: none'/>"
+    + "<table id='search'><tr><td>From</td><td><input name='begin' value='" + (uriargs.begin ? uriargs.begin : (new Date(now.getTime() - 3600 * 24 * 1000).toISOString())) + "'/></td></tr>"
+    + "<tr><td>To</td><td><input name='end' value='" + (uriargs.end ? uriargs.end : (new Date(now.getTime()).toISOString())) + "'/></td></tr>"
+    + "<tr><input type='submit' value='Search'/><tr><table></form>";
     if (json.info == "OK") {
         html += ("<table id='result'><tr><th>Event</th><th>Info</th><th></th></tr>");
         console.log(json);

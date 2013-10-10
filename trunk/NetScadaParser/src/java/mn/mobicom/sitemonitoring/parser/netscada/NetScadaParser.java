@@ -72,18 +72,25 @@ public class NetScadaParser extends ParserCore implements JNDIService {
                         data.map.put(device + ".batt.t2", tmp[6]);
                     } else if (tmp[0].toLowerCase().equals("smro")) {
                         data.map.put(device + ".smro.v", tmp[1]);
-                        data.map.put(device + ".smro.i1", tmp[2]);
-                        data.map.put(device + ".smro.i2", tmp[3]);
-                        data.map.put(device + ".smro.i3", tmp[4]);
-                        data.map.put(device + ".smro.i4", tmp[5]);
-                        data.map.put(device + ".smro.i5", tmp[6]);
-                        data.map.put(device + ".smro.i6", tmp[7]);
+                    } else if (tmp[0].toLowerCase().equals("smri")) {
+                        data.map.put(device + ".smri.1", tmp[1]);
+                        data.map.put(device + ".smri.2", tmp[2]);
+                        data.map.put(device + ".smri.3", tmp[3]);
+                    } else if (tmp[0].toLowerCase().equals("smr_1")) {
+                        data.map.put(device + ".smr1.1", tmp[1]);
+                        data.map.put(device + ".smr1.2", tmp[2]);
+                    } else if (tmp[0].toLowerCase().equals("smr_2")) {
+                        data.map.put(device + ".smr2.1", tmp[1]);
+                        data.map.put(device + ".smr2.2", tmp[2]);
+                    } else if (tmp[0].toLowerCase().equals("smr_3")) {
+                        data.map.put(device + ".smr3.1", tmp[1]);
+                        data.map.put(device + ".smr3.2", tmp[2]);
                     } else if (tmp[0].toLowerCase().equals("dcou")) {
                         data.map.put(device + ".dcou.v", tmp[1]);
                         data.map.put(device + ".dcou.i", tmp[2]);
                     } else if (tmp[0].toLowerCase().equals("alrm")) {
-                        data.map.put(device + ".alrm.info_" + r, tmp[1]);
-                        data.map.put(device + ".alrm.date_" + r, tmp[2]);
+                        data.map.put(device + ".alrm_info." + r, tmp[1]);
+                        data.map.put(device + ".alrm_date." + r, tmp[2]);
                     } else if (tmp[0].toLowerCase().equals("acin")) {
                         data.map.put(device + ".acin.a", tmp[1]);
                         if (tmp.length > 2) {
@@ -118,6 +125,9 @@ public class NetScadaParser extends ParserCore implements JNDIService {
         } catch (Exception ex) {
             logger.info("", ex);
         }
+    }
+
+    public void parseValue(String device, String tmp[]) {
     }
 
     @Override

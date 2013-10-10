@@ -27,18 +27,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "T_MEASURE")
 @NamedQueries({
     @NamedQuery(name = "Measure.findById", query = "SELECT m FROM Measure m WHERE m.id = :id"),
-    @NamedQuery(name = "Measure.findByIds", query = "SELECT m, m.event.measure_date, m.event.device.udid FROM Measure m WHERE m.id in :id"),
+    @NamedQuery(name = "Measure.findByIds", query = "SELECT m, m.event.measure_date, m.event.device.udid FROM Measure m WHERE m.id in :id order by m.event.measure_date desc, m.name asc"),
     @NamedQuery(name = "Measure.findByEvent", query = "SELECT m FROM Event e JOIN e.measureList m where e.id = :event"),
-    @NamedQuery(name = "Measure.findByEvents", query = "SELECT m FROM Event e JOIN e.measureList m where e.id in :event"),
+    @NamedQuery(name = "Measure.findByEvents", query = "SELECT m FROM Event e JOIN e.measureList m where e.id in :event order by e.measure_date desc, m.name asc"),
     @NamedQuery(name = "Measure.findLastMeasuresOfSite",
-            //query = "SELECT max(e.measure_date), 1, m, d, max(m.id) as u FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name having u = max(m.id) order by m.id desc")
-            //query = "select k From Measure, IN(select m where Measure m order by m.id desc) k")
-            query = "select max(e.measure_date), m, d FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name") //query = "select max(m.id) FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name")
+    //query = "SELECT max(e.measure_date), 1, m, d, max(m.id) as u FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name having u = max(m.id) order by m.id desc")
+    //query = "select k From Measure, IN(select m where Measure m order by m.id desc) k")
+    query = "select max(e.measure_date), m, d FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name") //query = "select max(m.id) FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name")
     ,
     @NamedQuery(name = "Measure.findLastMeasureIdsOfSite",
-            //query = "SELECT max(e.measure_date), k FROM Measure k, Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by lower(m.name) having k.id = max(m.id) order by m.id desc")
-        //query = "SELECT k FROM Measure k, Measure m where m.event.device.site.id = :site group by m.name having max(m.id) = k.id")
-        query = "select max(m.id) FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name")
+    //query = "SELECT max(e.measure_date), k FROM Measure k, Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by lower(m.name) having k.id = max(m.id) order by m.id desc")
+    //query = "SELECT k FROM Measure k, Measure m where m.event.device.site.id = :site group by m.name having max(m.id) = k.id")
+    query = "select max(m.id) FROM Site s JOIN s.deviceList d JOIN d.eventList e JOIN e.measureList m where s.id = :site group by m.name")
 })
 public class Measure implements Serializable {
 

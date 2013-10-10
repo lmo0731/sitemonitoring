@@ -44,14 +44,7 @@ public class Log implements Runnable {
 
     public void start() {
         stop = false;
-        try {
-            File f = new File("../logs/parsers.log");
-            System.out.println(f.getAbsoluteFile());
-            fis = new FileInputStream(f);
-            System.out.println("Log monitoring started");
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
+        System.out.println("Log monitoring started");
         new Thread(this.getInstance()).start();
     }
 
@@ -112,6 +105,9 @@ public class Log implements Runnable {
         while (!stop) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
+                File f = new File("../logs/parsers.log");
+                fis = new FileInputStream(f);
+                fis.skip(lastByte);
                 int count = 0;
                 while (true) {
                     int b = -1;
@@ -135,15 +131,17 @@ public class Log implements Runnable {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (Exception ex) {
+                    }
+                }
             }
             try {
                 Thread.sleep(1000);
             } catch (Exception ex) {
             }
-        }
-        try {
-            fis.close();
-        } catch (IOException ex) {
         }
     }
 }
