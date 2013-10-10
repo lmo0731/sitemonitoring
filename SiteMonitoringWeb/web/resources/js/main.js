@@ -381,8 +381,24 @@ function controlSite(type, device, measure, value) {
     if ($("#dialog").length == 0) {
         $("#content").append("<div id='dialog' title='" + type + "' style='display: none'></div>");
     }
-    //$("#dialog").html('test');
-    $("#dialog").html("<div id='loading'></div><div id='result'></div><table><tr><input id='key' value='" + measure + "'/></td></tr><tr><td><input id='value' value='" + value + "'/></td></tr><tr><td><input type='submit' value='Set' id='submit'/></td></tr></table>");
+    var key = measure;
+    while(key.indexOf('.') < key.lastIndexOf('.') && !desc[key]){
+        key = (key.substring(0, key.lastIndexOf('.')));
+    }
+    var html = "<div id='loading'></div><div id='result'></div><table><tr><input id='key' value='" + measure + "'/></td></tr>";
+    html += "<tr><td><input id='value' value='" + value + "'/></td></tr>";
+    html += "<tr><td><input type='submit' value='Set' id='submit'/></td></tr>";
+    if(set[key] && set[key][2] && set[key][2][value]){
+        html += "<tr><td><div>";
+        for(var i in set[key][2]){
+            html += "" + i + ": " + set[key][2][i] + "<br/>";
+        }
+        html += "</div></td></tr>"
+    } else {
+        html += "<tr><td><div>"+(desc[key][3]?desc[key][3]:"")+"</div></td></tr>"
+    }
+    html += "</table>";
+    $("#dialog").html(html);
     $("#dialog #submit").click(function() {
         var key = ($('#dialog #key').val());
         var val = ($('#dialog #value').val());
